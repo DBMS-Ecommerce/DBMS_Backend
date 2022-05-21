@@ -1,0 +1,1 @@
+exports.loginController = require('../controllers/login.controller');
