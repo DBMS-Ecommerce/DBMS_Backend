@@ -2,18 +2,20 @@ const express = require('express'),
 app = express(), 
 cors = require('cors'),
 bodyParser = require('body-parser');
+const signupRouter = require('./src/routes/signupRouter')
 
 
 app.get('/',(req,res) =>{
-    res.send("Hello World");
+    res.send("Hello nj");
   })
 
 // use the modules
 app.use(cors())
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 
-
+app.use('/signup',signupRouter);
 
 
 // starting the server
