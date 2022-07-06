@@ -1,7 +1,19 @@
-
-function validateUser(user){
-   let status  ;
+const { v4: uuidv4 } = require('uuid');
+function validateUser(req,res,next){
+   
    let message  ;
+
+   const user ={
+     userName:req.body.userName,
+     password : req.body.password,
+     userType : req.body.userType,
+     phone_number : req.body.phone_num,
+     address : req.body.address,
+     user_id : uuidv4()
+     }
+
+
+
    const mailFormat = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
    const  passwordFormat = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})");
    const userName = user.userName;
@@ -10,21 +22,22 @@ function validateUser(user){
    const address = user.address;
 
    if (userName == ""){
-        status = false
+        
         message = "username can't be empty"
-        return {status,message};
+        return res.status(400).send(message)
    }
    else if(!mailFormat.test(userName)){
-        status = false
+        
         message = "Username is not valid"
-        return {status,message};
+        return res.status(400).send(message)
    }
    
-    if (password ==""){
-        status = false
+    if (password ==null){
+        
         message = "password can't be empty"
-        return {status,message};
+        return res.status(400).send(message)
     }
+    
     // else if(!passwordFormat.test(password)){
         
     //     status = false
@@ -32,29 +45,31 @@ function validateUser(user){
     //     return {status,message};
     // }
 
-    if(phone_number == ""){
-     status = false
+    if(phone_number == null){
+    
      message = "phone number can't be empty"
-     return {status,message};
+     return res.status(400).send(message)
     }else if( phone_number.length != 10) {
-     status = false
+    
      message = "phone number must have 10 digits"
-     return {status,message};
+     return res.status(400).send(message)
     }else if (isNaN(phone_number)){
-     status = false
+     
      message = "phone number must cantain only digits"
-     return {status,message};
+     return res.status(400).send(message)
     }
 
     if(address == ""){
-     status = false
+     
      message = "address can't be empty"
-     return {status,message};
+     return res.status(400).send(message)
     }
 
-        status = true
+        
         message = "Data are validated"
-        return {status,message};
+        req.user = user;
+        next();
+        
 
    
 }
