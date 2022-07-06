@@ -1,3 +1,4 @@
-const signUpUserModel = require('./signUpModel')
+const signUpUserModel = require('./customer/signUpModel')
+const loginModel = require('./customer/loginModel')
 
-module.exports ={signUpUserModel}
+module.exports ={signUpUserModel,loginModel}

@@ -2,7 +2,8 @@ const express = require('express'),
 app = express(), 
 cors = require('cors'),
 bodyParser = require('body-parser');
-const signupRouter = require('./src/routes/signupRouter')
+const cus_signup_Router  = require('./src/routes/customer/signupRouter');
+const cus_login_Router = require('./src/routes/customer/loginRouter');
 
 
 app.get('/',(req,res) =>{
@@ -15,7 +16,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-app.use('/signup',signupRouter);
+app.use('/signup',cus_signup_Router);
+app.use('/login',cus_login_Router)
 
 
 // starting the server
