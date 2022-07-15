@@ -49,14 +49,18 @@ class Item {
         });
     }
     quantity_Getter(sku) {
+        console.log(sku);
         return new Promise(async(resolve, reject) => {
             db.query(
                 "SELECT quantity From item WHERE sku=?", [sku],
-                async(item_quantity, error) => {
-                    if (err) {
+                async(error, item_quantity) => {
+                    console.log(item_quantity);
+                    console.log(item_quantity);
+                    if (error) {
                         return reject(error);
                     }
                     var item_quantity = JSON.parse(JSON.stringify(item_quantity));
+                    console.log(item_quantity);
                     if (item_quantity.length > 0) resolve(item_quantity[0].quantity);
                 }
             );
@@ -80,11 +84,16 @@ class Item {
         });
     }
     isAvailable(needed_quantity) {
+        console.log(needed_quantity);
+        console.log(this.sku);
         return new Promise(async(resolve, reject) => {
             const available_quantity = await this.quantity_Getter(this.sku);
+            console.log(available_quantity);
             if (needed_quantity > available_quantity) {
+                console.log("hiii");
                 return resolve(false);
             }
+            console.log("huui");
             return resolve(true);
         });
     }

@@ -83,6 +83,9 @@ app.post("/addCategory", async(req, res) => {
             console.log("ERROR WHEN ADDING A Category: " + err);
         } else {
             console.log("Category Inserted");
+            res.json({
+                success: "ok",
+            });
         }
     });
 });
@@ -98,6 +101,9 @@ app.post("/addSubCategory", async(req, res) => {
                 console.log(err);
                 console.log("ERROR WHEN ADDING A Category: " + err);
             } else {
+                res.json({
+                    success: "ok",
+                });
                 console.log("Sub Category Inserted");
             }
         }
@@ -163,7 +169,7 @@ app.post("/add_item", async(req, res) => {
     const sku = uuidv4();
 
     console.log(variant_array);
-
+    const item_variant = "Insert Into item_variant (sku,variant_id) Values (?,?)";
     const sql_variant =
         "INSERT INTO variant (variant_id,product_id,title,var_price,var_type) VALUES (?,?,?,?,?)";
     var trCon = transaction({
@@ -195,6 +201,9 @@ app.post("/add_item", async(req, res) => {
                     0,
                     item_title
                 );
+                var_id_array.forEach(async(element, index) => {
+                    db.query(item_variant, [sku, element]);
+                });
             } catch (err) {
                 console.log("ERROR WHEN CREATING A Item: " + err);
                 res.json({
@@ -202,6 +211,9 @@ app.post("/add_item", async(req, res) => {
                     err,
                 });
             }
+            res.json({
+                success: "ok",
+            });
             console.log("Data Inserted");
         })
         .on("rollback", function(err) {
@@ -216,9 +228,11 @@ app.post("/add_item", async(req, res) => {
     //         chain.query(sql_variant, [pro_id, variant[key]])
     //     }
     // })
+    let var_id_array = [];
     variant_array.forEach(async(element, index) => {
         console.log(element.title);
         const variant_id = uuidv4();
+        var_id_array.push(variant_id);
         chain.query(sql_variant, [
             variant_id,
             pro_id,
@@ -226,21 +240,23 @@ app.post("/add_item", async(req, res) => {
             element.var_price,
             element.var_type,
         ]);
+
         unit_price += element.var_price;
         item_title = item_title + " " + element.title;
     });
 });
 
-app.put("/ModifyItem/:sku", async(req, res) => {
-    const upadted_item_array = req.body.upadted_item_arrayy;
+app.post("/ModifyItem", async(req, res) => {
+    const updated_item_array = req.body.updated_item_array;
+    console.log(req.body);
     // const { quantity, is_default, image } = req.body;
-    upadted_item_array.foreach(async(element, index) => {
+    updated_item_array.forEach(async(element, index) => {
         let item = new Item(element.sku);
         try {
             let update_result = await item.updateItemProperties(
-                quantity,
-                is_default,
-                image
+                element.quantity,
+                element.is_default,
+                element.image
             );
             res.json({ success: true, u_result: update_result });
         } catch (error) {
@@ -249,7 +265,9 @@ app.put("/ModifyItem/:sku", async(req, res) => {
     });
 });
 app.put("/confirm_order/:order_id", async(req, res) => {
-    let order = new Order(req.params.id);
+    let order = new Order(req.params.order_id);
+    console.log(req.params.order_id);
+    console.log(order);
     var trCon = transaction({
         connection: [
             mysql.createConnection,
@@ -273,13 +291,16 @@ app.put("/confirm_order/:order_id", async(req, res) => {
         .on("rollback", function(err) {
             console.log("Failed");
         });
-    let order_data = order.GettingOrderDetails();
-    let o_confirmation_result = await order.confirmOrder(order_data);
+    let order_data = await order.GettingOrderDetails();
+    var o_confirmation_result = await order.confirmOrder(order_data);
+    console.log(await order.confirmOrder(order_data));
+    console.log("dibaaa");
+    console.log(o_confirmation_result);
     if (o_confirmation_result) {
         chain
             .query("UPDATE cus_order SET order_status=? WHERE order_id=?", [
                 "CONFIRMED",
-                req.params.id,
+                req.params.order_id,
             ])
             .on("result", async function(result) {
                 await order.SettingOrder_ItemDetails(order_data);
@@ -291,7 +312,7 @@ app.put("/confirm_order/:order_id", async(req, res) => {
     } else {
         chain.query("UPDATE cus_order SET order_status=? WHERE order_id=?", [
             "CANCELLED",
-            req.params.id,
+            req.params.order_id,
         ]);
         console.log("Order Cancelled");
         res.json({
