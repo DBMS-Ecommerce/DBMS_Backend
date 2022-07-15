@@ -1,4 +1,3 @@
-
 var transaction = require("node-mysql-transaction");
 const Item = require("./src/models/Item");
 const Order = require("./src/models/Order");
@@ -10,7 +9,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const signupRouter = require("./src/routes/signupRouter");
+
 const path = require("path");
 require("dotenv").config();
 app.use(express.static(path.join(__dirname, "public")));
@@ -19,12 +18,10 @@ app.get("/", (req, res) => {
     res.send("Hello nj");
 });
 
-const cus_signup_Router  = require('./src/routes/customer/signupRouter');
-const cus_login_Router = require('./src/routes/customer/loginRouter');
-const category_Router = require('./src/routes/customer/categoryRouter');
-const user_Router = require('./src/routes/customer/userRouter');
-
-
+const cus_signup_Router = require("./src/routes/customer/signupRouter");
+const cus_login_Router = require("./src/routes/customer/loginRouter");
+const category_Router = require("./src/routes/customer/categoryRouter");
+const user_Router = require("./src/routes/customer/userRouter");
 
 // use the modules
 app.use(cors());
@@ -35,7 +32,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/signup", signupRouter);
 // starting the server
 // require("dotenv").config();
 var db;
@@ -49,7 +45,6 @@ function handleDisconnect() {
         port: process.env.DATABASE_PORT,
     });
 
-
     db.connect((err) => {
         if (err) {
             console.log("error when connecting to db: ", err);
@@ -57,11 +52,10 @@ function handleDisconnect() {
         }
     });
 
-app.use('/signup',cus_signup_Router);
-app.use('/login',cus_login_Router);
-app.use('/category',category_Router);
-app.use('/user',user_Router);
-
+    app.use("/signup", cus_signup_Router);
+    app.use("/login", cus_login_Router);
+    app.use("/category", category_Router);
+    app.use("/user", user_Router);
 
     db.on("error", (err) => {
         if (err.code === "PROTOCOL_CONNECTION_LOST") {
@@ -335,7 +329,7 @@ app.get("/product_show", async(req, res, next) => {
     if (req.query.sub_category) {
         var s_cat_id = await sub_cat_ID_finder(req.query.sub_category);
         try {
-            var sub_categories = await Product_Filter.getAll_Products(s_cat_id);
+            var products = await Product_Filter.getAll_Products(s_cat_id);
         } catch (error) {
             next(error);
         }
@@ -356,6 +350,27 @@ app.get("/item_show", async(req, res, next) => {
             search: req.query.title,
             searchBy: "title",
         };
+    }
+    if (req.query.category) {
+        dataObject.whereObject.category = req.query.category;
+        var cat_id = await cat_ID_finder(req.query.category);
+    }
+    if (req.query.sub_category) {
+        dataObject.whereObject.category = req.query.sub_category;
+        var s_cat_id = await sub_cat_ID_finder(req.query.sub_category);
+    }
+    if (req.query.product) {
+        dataObject.whereObject.product = req.query.product;
+        var pro_id = await pro_ID_finder(req.query.product);
+    }
+    try {
+        var items = await Product_Filter.getAllItems(dataObject);
+        var categories = await Product_Filter.getAllCategories();
+        var sub_categories = await Product_Filter.getAllSubCategories(cat_id);
+        var products = await Product_Filter.getAll_Products(s_cat_id);
+        res.json({ success: true, items, categories, sub_categories, products });
+    } catch (err) {
+        next(err);
     }
 });
 const port = process.env.PORT || 5000;

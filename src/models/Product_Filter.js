@@ -5,8 +5,8 @@ const db = require(path.resolve(__dirname, "database", "connection"));
 const dbHelper = require(path.resolve(__dirname, "database", "helper"));
 
 class Product_Filter {
-    static getAllProducts(dataObject) {
-        let sql = "SELECT * from product";
+    static getAllItems(dataObject) {
+        let sql = "SELECT * from item";
         let where = 0;
         if (
             dataObject &&
@@ -19,6 +19,12 @@ class Product_Filter {
                 dbHelper.equalSequenceString(Object.keys(dataObject.whereObject));
             where = 1;
         }
+        if (dataObject && "like" in dataObject && dataObject.like) {
+            if (where == 0) sql = sql + " WHERE ";
+            else sql = sql + " AND ";
+            sql =
+                sql + dataObject.like.searchBy + ` LIKE '%${dataObject.like.search}%' `;
+        }
         let values = null;
         if (where) values = Object.values(dataObject.whereObject);
         return new Promise((resolve, reject) => {
@@ -26,6 +32,21 @@ class Product_Filter {
                 if (err) return reject(err);
                 resolve(JSON.parse(JSON.stringify(results)));
             });
+        });
+    }
+    static getAll_Products(sub_cat_id) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "SELECT DISTINCT title FROM product Where sub_category_id=?", [sub_cat_id],
+                (err, results) => {
+                    if (err) return reject(err);
+                    let products = [];
+                    JSON.parse(JSON.stringify(results)).forEach((element) => {
+                        products.push(element.title);
+                    });
+                    resolve(products);
+                }
+            );
         });
     }
     static getAllCategories() {
