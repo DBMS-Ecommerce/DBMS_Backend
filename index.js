@@ -10,7 +10,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const signupRouter = require("./src/routes/signupRouter");
+// const signupRouter = require("./src/routes/signupRouter");
 const path = require("path");
 require("dotenv").config();
 app.use(express.static(path.join(__dirname, "public")));
@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/signup", signupRouter);
+// app.use("/signup", signupRouter);
 // starting the server
 // require("dotenv").config();
 var db;
