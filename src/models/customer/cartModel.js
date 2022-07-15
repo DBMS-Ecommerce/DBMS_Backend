@@ -6,7 +6,7 @@ async function addToCart(req,res){
     const sku = req.body.sku;
     const price = req.body.price;
 
-    console.log(cus_id,quantity,sku,price);
+    
 
     stmt = "INSERT INTO `cart` (`customer_id`, `sku`, `quantity`, `price`) VALUES (?,?,?,?)"
 
