@@ -1,4 +1,4 @@
-const {loginModel} = require('../../models');
+const loginModel = require('../../models/customer/loginModel');
 
 async function loginUserMethod(req,res){
     

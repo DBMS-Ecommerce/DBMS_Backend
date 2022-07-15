@@ -1,4 +1,4 @@
-const {signUpUserModel} = require('../../models');
+const signUpUserModel = require('../../models/customer/signUpModel');
 
 async function signUpUserMethod(req,res){
     
