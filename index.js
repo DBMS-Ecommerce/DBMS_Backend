@@ -2,6 +2,7 @@ var transaction = require("node-mysql-transaction");
 const Item = require("./src/models/Item");
 const Order = require("./src/models/Order");
 const Product_Filter = require("./src/models/Product_Filter");
+const Item_Filter = require("./src/models/ItemFilter");
 const { v4: uuidv4 } = require("uuid");
 const mysql = require("mysql");
 const express = require("express");
@@ -177,7 +178,7 @@ app.post("/add_item", async(req, res) => {
         .on("commit", async function() {
             try {
                 let item = new Item(sku);
-                await item.InitiateItemProperties(pro_id, unit_price, 0 + ".jpg", 0, 0);
+                await item.InitiateItemProperties(pro_id, unit_price, 0 + ".jpg", 0, 0, item_title);
             } catch (err) {
                 console.log("ERROR WHEN CREATING A Item: " + err);
                 res.json({
@@ -193,6 +194,7 @@ app.post("/add_item", async(req, res) => {
         });
 
     var unit_price = 0;
+    var item_title = req.body.title;
     // variant_array.forEach(variant => {
     //     for (let key in variant) {
     //         chain.query(sql_variant, [pro_id, variant[key]])
@@ -209,22 +211,27 @@ app.post("/add_item", async(req, res) => {
             element.var_type,
         ]);
         unit_price += element.var_price;
+        item_title = item_title + " " + element.title;
     });
 });
 
 app.put("/ModifyItem/:sku", async(req, res) => {
-    const { quantity, is_default, image } = req.body;
-    let item = new Item(req.params.sku);
-    try {
-        let modified_item_data = await item.updateItemProperties(
-            quantity,
-            is_default,
-            image
-        );
-        res.json({ success: true, modified_item_data });
-    } catch (error) {
-        console.log("ERROR WHEN Modifying A Item: " + err);
-    }
+    const upadted_item_array = req.body.upadted_item_arrayy;
+    // const { quantity, is_default, image } = req.body;
+    upadted_item_array.foreach((element, index) => {
+        let item = new Item(element.sku);
+        try {
+            let update_result = await item.updateItemProperties(
+                quantity,
+                is_default,
+                image
+            );
+            res.json({ success: true, u_result: update_result });
+        } catch (error) {
+            console.log("ERROR WHEN Modifying A Item: " + err);
+        }
+    })
+
 });
 app.put("/confirm_order/:order_id", async(req, res) => {
     let order = new Order(req.params.id);
@@ -277,8 +284,17 @@ app.put("/confirm_order/:order_id", async(req, res) => {
         });
     }
 });
+app.get("/view_Add_variant", async(req, res, next) => {
+    try {
+        let categories = await Product_Filter.getAllCategories();
+        res.json({ success: true, categories });
+    } catch (error) {
+        next(error);
+    }
+})
 app.get("/product_show", async(req, res, next) => {
-    let dataObject = { whereObject: {} };
+    //variant adding scenario
+    // let dataObject = { whereObject: {} };
     // if(req.query.producttitle){
     //     dataObject.like = {
     //         search : req.query.producttitle,
@@ -286,23 +302,40 @@ app.get("/product_show", async(req, res, next) => {
     //     }
     // }
 
-    if (req.query.category) {
+    if (req.body.category) {
         // dataObject.whereObject.category = req.query.category;
-        var cat_id = await cat_ID_finder(req.query.category);
+        var cat_id = await cat_ID_finder(req.body.category);
+        try {
+            var sub_categories = await Product_Filter.getAllSubCategories(cat_id);
+        } catch (error) {
+            next(error);
+        }
     }
     if (req.query.sub_category) {
         var s_cat_id = await sub_cat_ID_finder(req.query.sub_category);
-        dataObject.whereObject.sub_category = s_cat_id;
+        try {
+            var sub_categories = await Product_Filter.getAll_Products(s_cat_id);
+        } catch (error) {
+            next(error);
+        }
     }
     try {
-        let categories = await Product_Filter.getAllCategories();
-        let sub_categories = await Product_Filter.getAllSubCategories(cat_id);
-        let products = await Product_Filter.getAllProducts(dataObject);
+        // let categories = await Product_Filter.getAllCategories();
+        // // let sub_categories = await Product_Filter.getAllSubCategories(cat_id);
+        // let products = await Product_Filter.getAllProducts(dataObject);
         res.json({ success: true, categories, sub_categories, products });
     } catch (err) {
         next(err);
     }
 });
-
+app.get("/item_show", async(req, res, next) => {
+    let dataObject = { whereObject: {} };
+    if (req.query.title) {
+        dataObject.like = {
+            search: req.query.title,
+            searchBy: 'title'
+        }
+    }
+})
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server started, listening port: ${port}`));
