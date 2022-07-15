@@ -178,7 +178,14 @@ app.post("/add_item", async(req, res) => {
         .on("commit", async function() {
             try {
                 let item = new Item(sku);
-                await item.InitiateItemProperties(pro_id, unit_price, 0 + ".jpg", 0, 0, item_title);
+                await item.InitiateItemProperties(
+                    pro_id,
+                    unit_price,
+                    0 + ".jpg",
+                    0,
+                    0,
+                    item_title
+                );
             } catch (err) {
                 console.log("ERROR WHEN CREATING A Item: " + err);
                 res.json({
@@ -200,7 +207,7 @@ app.post("/add_item", async(req, res) => {
     //         chain.query(sql_variant, [pro_id, variant[key]])
     //     }
     // })
-    variant_array.forEach((element, index) => {
+    variant_array.forEach(async(element, index) => {
         console.log(element.title);
         const variant_id = uuidv4();
         chain.query(sql_variant, [
@@ -218,7 +225,7 @@ app.post("/add_item", async(req, res) => {
 app.put("/ModifyItem/:sku", async(req, res) => {
     const upadted_item_array = req.body.upadted_item_arrayy;
     // const { quantity, is_default, image } = req.body;
-    upadted_item_array.foreach((element, index) => {
+    upadted_item_array.foreach(async(element, index) => {
         let item = new Item(element.sku);
         try {
             let update_result = await item.updateItemProperties(
@@ -230,8 +237,7 @@ app.put("/ModifyItem/:sku", async(req, res) => {
         } catch (error) {
             console.log("ERROR WHEN Modifying A Item: " + err);
         }
-    })
-
+    });
 });
 app.put("/confirm_order/:order_id", async(req, res) => {
     let order = new Order(req.params.id);
@@ -291,7 +297,7 @@ app.get("/view_Add_variant", async(req, res, next) => {
     } catch (error) {
         next(error);
     }
-})
+});
 app.get("/product_show", async(req, res, next) => {
     //variant adding scenario
     // let dataObject = { whereObject: {} };
@@ -333,9 +339,9 @@ app.get("/item_show", async(req, res, next) => {
     if (req.query.title) {
         dataObject.like = {
             search: req.query.title,
-            searchBy: 'title'
-        }
+            searchBy: "title",
+        };
     }
-})
+});
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server started, listening port: ${port}`));
