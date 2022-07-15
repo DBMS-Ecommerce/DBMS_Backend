@@ -1,4 +1,4 @@
-const {validateUser} = require('./signUp.middleware')
+const {validateUser} = require('./customer/signUp.middleware')
 
 module.exports = {
     validateUser
