@@ -328,6 +328,14 @@ app.get("/view_Add_variant", async(req, res, next) => {
         next(error);
     }
 });
+app.get("/viewCategories", async(req, res, next) => {
+    try {
+        let categories = await Product_Filter.getAllCate();
+        res.json({ success: true, categories });
+    } catch (error) {
+        next(error);
+    }
+});
 app.get("/product_show", async(req, res, next) => {
     //variant adding scenario
     // let dataObject = { whereObject: {} };
@@ -359,7 +367,7 @@ app.get("/product_show", async(req, res, next) => {
         // let categories = await Product_Filter.getAllCategories();
         // // let sub_categories = await Product_Filter.getAllSubCategories(cat_id);
         // let products = await Product_Filter.getAllProducts(dataObject);
-        res.json({ success: true, categories, sub_categories, products });
+        res.json({ success: true, categories, sub_categories });
     } catch (err) {
         next(err);
     }
