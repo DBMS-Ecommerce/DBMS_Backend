@@ -18,7 +18,7 @@ async function signUpUser (req,res){
     // const   user_id = uuidv4()
     
     
-    const signUpQuery1 = "INSERT  INTO user (userName,password,user_type,user_id) VALUES (?,?,?,?)"
+    const signUpQuery1 = "INSERT  INTO user (userName,password,user_type,user_id,name) VALUES (?,?,?,?,?)"
     const signUpQuery2 = "INSERT  INTO customer (phone_number,address,user_id) VALUES (?,?,?)"
     const checkUser = "select username from user where username = ?";
 
@@ -62,7 +62,7 @@ async function signUpUser (req,res){
                     });
                 
                     chain.
-                    query(signUpQuery1,[user.userName,user.password,user.userType,user.user_id]).
+                    query(signUpQuery1,[user.userName,user.password,user.userType,user.user_id,user.name]).
                     query(signUpQuery2,[user.phone_number,user.address,user.user_id]);
                     resolve(result);
 
