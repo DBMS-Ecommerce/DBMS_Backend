@@ -13,9 +13,11 @@ async function loginUser (req,res){
     db.query(stmt,[user.userName,user.password], (err, result, fields) => {
         if (err) throw err;
         if (result.length == 0 ) {
-            console.log("No User");
+            
+            res.status(400).send("Unregistered user");
         }else{
-            console.log(result)
+            
+            res.status(200).send("loged in");
         }
     });
     
