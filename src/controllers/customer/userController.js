@@ -1,4 +1,4 @@
-const {userModel} = require('../../models');
+const userModel = require('../../models/customer/userModel');
 
 async function getUserByIdMethod(req,res) {
     const result = await  userModel.getCustomerById(req,res);

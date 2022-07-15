@@ -23,16 +23,29 @@ async function getAllCategory(req,res){
     })
 }
 
-async function getItemByCategory(req,res){
-    const cat_id = req.params.id;
-
-    stmt = "SELECT * FROM item WHERE "
-}
-
-
 async function getAllSubCategory(req,res){
     const cat_id = req.params.id;
-    const stmt = "SELECT * FROM category";
+    const stmt1 = "SELECT title FROM sub_category ";
+    
+
+    return new Promise((resolve,reject)=>{
+        db.query(stmt,function (err, result, fields) {
+                if (err)
+                    throw err;
+
+                if (result.length == 0) {
+                    console.log("No sub category available");
+                    reject(new Error("No Cat"));
+                } else {
+
+                    resolve(result);
+
+                }
+            })
+
+    })
 }
 
-module.exports = {getAllCategory}
+
+
+module.exports = {getAllCategory,getAllSubCategory}
