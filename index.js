@@ -1,3 +1,4 @@
+
 var transaction = require("node-mysql-transaction");
 const Item = require("./src/models/Item");
 const Order = require("./src/models/Order");
@@ -17,6 +18,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
     res.send("Hello nj");
 });
+
+const cus_signup_Router  = require('./src/routes/customer/signupRouter');
+const cus_login_Router = require('./src/routes/customer/loginRouter');
+const category_Router = require('./src/routes/customer/categoryRouter');
+const user_Router = require('./src/routes/customer/userRouter');
+
+
 
 // use the modules
 app.use(cors());
@@ -41,12 +49,19 @@ function handleDisconnect() {
         port: process.env.DATABASE_PORT,
     });
 
+
     db.connect((err) => {
         if (err) {
             console.log("error when connecting to db: ", err);
             setTimeout(handleDisconnect, 2000);
         }
     });
+
+app.use('/signup',cus_signup_Router);
+app.use('/login',cus_login_Router);
+app.use('/category',category_Router);
+app.use('/user',user_Router);
+
 
     db.on("error", (err) => {
         if (err.code === "PROTOCOL_CONNECTION_LOST") {
