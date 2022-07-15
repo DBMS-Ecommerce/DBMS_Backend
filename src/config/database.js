@@ -15,7 +15,8 @@ const mysql = require("mysql");
   var connection = mysql.createConnection({
     host: dbConfig.host,
     user: dbConfig.user,
-    password: dbConfig.password
+    password: dbConfig.password,
+    database: dbConfig.db
   });
   
   connection.connect(function(err) {
