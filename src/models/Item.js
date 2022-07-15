@@ -29,7 +29,7 @@ class Item {
 
 
     updateItemProperties(quantity, is_default, image) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             db.query("UPDATE item SET quantity=?,is_default=?,image=? WHERE sku=?", [quantity, is_default, image, this.sku], async(err, result) => {
                 if (err) {
                     return reject(err);
@@ -41,20 +41,21 @@ class Item {
         })
     }
     quantity_Getter(sku) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             db.query("SELECT quantity From item WHERE sku=?", [sku], async(item_quantity, error) => {
                 if (err) {
                     return reject(error);
                 }
-                let item_quantity = JSON.parse(JSON.stringify(item_quantity))
+                var item_quantity = JSON.parse(JSON.stringify(item_quantity))
                 if (item_quantity.length > 0) resolve(item_quantity[0].quantity)
             })
         })
     }
     quantity_Setter(confirmed_needed_quantity) {
-        const available_quantity = await this.quantity_Getter(this.sku);
-        const new_quantity = available_quantity - confirmed_needed_quantity;
-        return new Promise((resolve, reject) => {
+        
+        return new Promise(async(resolve, reject) => {
+            const available_quantity = await this.quantity_Getter(this.sku);
+            const new_quantity = available_quantity - confirmed_needed_quantity;
             db.query("UPDATE item SET quantity=? WHERE sku=?", [new_quantity, this.sku], async(err, result) => {
                 if (err) {
                     return reject(err);
@@ -66,7 +67,7 @@ class Item {
         })
     }
     isAvailable(needed_quantity) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             const available_quantity = await this.quantity_Getter(this.sku);
             if (needed_quantity > available_quantity) {
                 return resolve(false);

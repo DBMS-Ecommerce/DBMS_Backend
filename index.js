@@ -233,7 +233,7 @@ app.post("/add_item", async(req, res) => {
 app.put("/ModifyItem/:sku", async(req, res) => {
     const upadted_item_array = req.body.upadted_item_arrayy;
     // const { quantity, is_default, image } = req.body;
-    upadted_item_array.foreach((element, index) => {
+    upadted_item_array.foreach(async (element, index) => {
         let item = new Item(element.sku);
         try {
             let update_result = await item.updateItemProperties(
