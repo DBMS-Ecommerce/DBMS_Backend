@@ -25,11 +25,12 @@ async function getAllCategory(req,res){
 
 async function getAllSubCategory(req,res){
     const cat_id = req.params.id;
-    const stmt1 = "SELECT title FROM sub_category ";
+    console.log(cat_id);
+    const stmt1 = "SELECT sub_category_id,title FROM sub_category ";
     
 
     return new Promise((resolve,reject)=>{
-        db.query(stmt,function (err, result, fields) {
+        db.query(stmt1,[cat_id],function (err, result, fields) {
                 if (err)
                     throw err;
 

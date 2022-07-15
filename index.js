@@ -7,6 +7,7 @@ const cus_signup_Router  = require('./src/routes/customer/signupRouter');
 const cus_login_Router = require('./src/routes/customer/loginRouter');
 const category_Router = require('./src/routes/customer/categoryRouter');
 const user_Router = require('./src/routes/customer/userRouter');
+const product_Router = require('./src/routes/customer/productRouter')
 
 
 app.get('/',(req,res) =>{
@@ -23,6 +24,7 @@ app.use('/signup',cus_signup_Router);
 app.use('/login',cus_login_Router);
 app.use('/category',category_Router);
 app.use('/user',user_Router);
+app.use('/products',product_Router)
 
 
 // starting the server
