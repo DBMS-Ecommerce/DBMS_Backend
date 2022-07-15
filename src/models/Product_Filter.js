@@ -51,14 +51,17 @@ class Product_Filter {
     }
     static getAllCategories() {
         return new Promise((resolve, reject) => {
-            db.query("SELECT DISTINCT title FROM category", (err, results) => {
-                if (err) return reject(err);
-                let categories = [];
-                JSON.parse(JSON.stringify(results)).forEach((element) => {
-                    categories.push(element.title);
-                });
-                resolve(categories);
-            });
+            db.query(
+                "SELECT DISTINCT title,category_id FROM category",
+                (err, results) => {
+                    if (err) return reject(err);
+                    let categories = [];
+                    JSON.parse(JSON.stringify(results)).forEach((element) => {
+                        categories.push(element);
+                    });
+                    resolve(categories);
+                }
+            );
         });
     }
     static getAllSubCategories(cat_id) {
