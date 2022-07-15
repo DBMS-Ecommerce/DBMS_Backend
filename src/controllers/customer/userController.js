@@ -6,4 +6,9 @@ async function getUserByIdMethod(req,res) {
     res.send(result);
 }
 
-module.exports = getUserByIdMethod;
+async function updateUser(req,res) {
+    const result = await  userModel.updateCustomer(req,res);
+    
+}
+
+module.exports = {getUserByIdMethod,updateUser};

@@ -137,6 +137,7 @@ async function getDefaultProductVarById(id){
                 }
             })
 
+
     })
 }
 
@@ -228,3 +229,5 @@ async function getPriceByVariants(variants){
 
 
 module.exports = {getAllProducts,getProductVarsById,getDefaultProductVarById,getAllProductsBySubCat,getPriceByVariants}
+
+

@@ -4,6 +4,7 @@ async function getDefaultProductVarById(req,res){
     
     const result = await productModel.getDefaultProductVarById(req.params.id);
     res.send(result);
+    return;
 }
 async function getAllProductsBySubCat(req,res){
     
@@ -24,5 +25,10 @@ async function getPriceByVariants(req,res){
 
 
 
-
+async function getProductVariantMethod(req,res){
+    
+    const result = await productModel.getProductsVar(req,res);
+    res.send(result);
+    return;
+}
 module.exports = {getDefaultProductVarById,getProductVarsById,getAllProductsBySubCat,getPriceByVariants};

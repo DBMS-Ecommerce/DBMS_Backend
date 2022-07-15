@@ -9,6 +9,7 @@ function validateUser(req,res,next){
      userType : req.body.userType,
      phone_number : req.body.phone_num,
      address : req.body.address,
+     name : req.body.name,
      user_id : uuidv4()
      }
 

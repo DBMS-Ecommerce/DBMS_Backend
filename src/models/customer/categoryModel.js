@@ -26,7 +26,7 @@ async function getAllCategory(req,res){
 async function getAllSubCategory(req,res){
     const cat_id = req.params.id;
     console.log(cat_id);
-    const stmt1 = "SELECT sub_category_id,title FROM sub_category ";
+    const stmt1 = "SELECT sub_category_id,title FROM sub_category where `category_id` = ? ";
     
 
     return new Promise((resolve,reject)=>{
@@ -38,7 +38,7 @@ async function getAllSubCategory(req,res){
                     console.log("No sub category available");
                     reject(new Error("No Cat"));
                 } else {
-
+                    
                     resolve(result);
 
                 }
