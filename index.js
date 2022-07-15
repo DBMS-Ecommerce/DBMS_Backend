@@ -336,6 +336,15 @@ app.get("/viewCategories", async(req, res, next) => {
         next(error);
     }
 });
+app.get("/sub_categoryShow/:category_id", async(req, res, next) => {
+    var category_id = req.params.category_id;
+    try {
+        var sub_categories = await Product_Filter.getAllSubCategories(category_id);
+        res.json({ success: true, sub_categories });
+    } catch (error) {
+        next(error);
+    }
+});
 app.get("/product_show", async(req, res, next) => {
     //variant adding scenario
     // let dataObject = { whereObject: {} };
