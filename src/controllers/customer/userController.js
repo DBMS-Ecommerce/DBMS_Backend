@@ -1,7 +1,8 @@
 const {userModel} = require('../../models');
 
 async function getUserByIdMethod(req,res) {
-    const result = userModel.getUserById;
+    const result = await  userModel.getCustomerById(req,res);
+    
     res.send(result);
 }
 

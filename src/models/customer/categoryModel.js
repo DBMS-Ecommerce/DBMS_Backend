@@ -2,8 +2,7 @@
 const db = require('../../config/database');
 
 async function getAllCategory(req,res){
-    const stmt = "SELECT * FROM user";
-    var res1;
+    const stmt = "SELECT * FROM category";
 
     return new Promise((resolve,reject)=>{
         db.query(stmt,function (err, result, fields) {
@@ -28,6 +27,12 @@ async function getItemByCategory(req,res){
     const cat_id = req.params.id;
 
     stmt = "SELECT * FROM item WHERE "
+}
+
+
+async function getAllSubCategory(req,res){
+    const cat_id = req.params.id;
+    const stmt = "SELECT * FROM category";
 }
 
 module.exports = {getAllCategory}
