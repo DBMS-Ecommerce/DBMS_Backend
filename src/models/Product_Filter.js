@@ -64,6 +64,33 @@ class Product_Filter {
             );
         });
     }
+    static getAllCate() {
+        return new Promise((resolve, reject) => {
+            db.query("SELECT DISTINCT title FROM category", (err, results) => {
+                if (err) return reject(err);
+                let categories = [];
+                JSON.parse(JSON.stringify(results)).forEach((element) => {
+                    categories.push(element);
+                });
+                resolve(categories);
+            });
+        });
+    }
+    static getAllitems(product_id) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "SELECT * FROM item where product_id=?", [product_id],
+                (err, results) => {
+                    if (err) return reject(err);
+                    let products = [];
+                    JSON.parse(JSON.stringify(results)).forEach((element) => {
+                        products.push(element);
+                    });
+                    resolve(products);
+                }
+            );
+        });
+    }
     static getAllSubCategories(cat_id) {
         return new Promise((resolve, reject) => {
             db.query(

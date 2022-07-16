@@ -411,5 +411,14 @@ app.get("/item_show", async(req, res, next) => {
         next(err);
     }
 });
+app.get("/item_showing/:product_id", async(req, res, next) => {
+    var product_id = req.params.product_id;
+    try {
+        var items = await Product_Filter.getAllitems(product_id);
+        res.json({ success: true, items });
+    } catch (error) {
+        next(error);
+    }
+});
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Server started, listening port: ${port}`));
