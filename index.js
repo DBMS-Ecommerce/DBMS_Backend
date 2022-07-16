@@ -8,7 +8,8 @@ const cus_login_Router = require('./src/routes/customer/loginRouter');
 const category_Router = require('./src/routes/customer/categoryRouter');
 const user_Router = require('./src/routes/customer/userRouter');
 const product_Router = require('./src/routes/customer/productRouter');
-const cart_Router = require('./src/routes/customer/cartRouter')
+const cart_Router = require('./src/routes/customer/cartRouter');
+const order_Router = require('./src/routes/customer/orderRouter')
 
 
 app.get('/',(req,res) =>{
@@ -27,6 +28,7 @@ app.use('/category',category_Router);
 app.use('/user',user_Router);
 app.use('/products',product_Router)
 app.use('/cart',cart_Router)
+app.use('/order',order_Router)
 
 
 // starting the server
