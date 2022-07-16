@@ -86,26 +86,20 @@ async function orderProducts(req,res){
             // return  res.status(400).send("Data Insertion Failed")
            
         });
+        const type = req.body.type;
+        const tot_amount = req.body.totalPrice;
+        const order_status = "PENDING";
+        const address = req.body.address;
+        const mob_num = req.body.phoneNumber;
+        const order_id = uuidv4();
+        
+
+        const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        chain = chain.query(stmt2,[order_id,cus_id,type,date,tot_amount,order_status,address,mob_num])
         item.forEach(element => {
-            const type = element.type;
-            const tot_amount = element.totalPrice;
-            const order_status = "PENDING";
-            const address = element.address;
-            const mob_num = element.phoneNumber;
-            const order_id = uuidv4();
-            const quantity = element.quantity;
-            const item_id =     element.item_id
-            
-    
-            const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    
         
-      
         
-           
-        
-            chain = chain.query(stmt2,[order_id,cus_id,type,date,tot_amount,order_status,address,mob_num]).query(stmt1,[order_id,item_id,quantity])
-            ;
+            chain = chain.query(stmt1,[order_id,element.item_id,element.quantity]);
             
             
         });

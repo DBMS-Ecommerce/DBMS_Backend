@@ -31,4 +31,12 @@ async function getProductVariantMethod(req,res){
     res.send(result);
     return;
 }
-module.exports = {getDefaultProductVarById,getProductVarsById,getAllProductsBySubCat,getPriceByVariants};
+async function searchByTitle(req,res){
+    
+ productModel.searchByTitle(req.body.title).then(result=>{
+    res.send(result);
+    return;
+ })
+    
+}
+module.exports = {getDefaultProductVarById,getProductVarsById,getAllProductsBySubCat,getPriceByVariants,searchByTitle};

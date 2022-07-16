@@ -226,8 +226,52 @@ async function getPriceByVariants(variants){
 
     })
 }
+async function searchByTitle(title){
+    var q = `SELECT * FROM item_view WHERE item_title LIKE '%${title}%' `;
 
+    return new Promise((resolve,reject)=>{
+        db.query(q,[],function (err, result, fields) {
+                if (err)
+                    throw err;
+                if (result.length == 0) {
+                    console.log("No product available");
+                    reject(new Error("No product"));
+                } else {
+                    console.log(result);
+                    
+                    var newRes = []
+                    result.forEach((item)=>{
+                        for(var i =0;i<newRes.length;i++){
+                            if(newRes[i].sku==item.sku){
+                                newRes[i].variants.push({variant_id:item.variant_id,
+                                    var_type:item.var_type,
+                                    var_title:item.var_title})
+                                return 
+                            }
+                        }
+                        newRes.push({
+                            product_id:item.product_id,
+                            product_title:item.product_title,
+                            sub_category_id:item.sub_category_id,
+                            unit_price:item.unit_price,
+                            quantity:item.quantity,
+                            image:item.image,
+                            sku:item.sku,
+                            is_default:item.is_default,
 
-module.exports = {getAllProducts,getProductVarsById,getDefaultProductVarById,getAllProductsBySubCat,getPriceByVariants}
+                            variants:[{variant_id:item.variant_id,var_type:item.var_type,var_title:item.var_title}]
+
+                        })
+                    })
+                  resolve(newRes)
+                    
+
+                }
+            })
+
+    })
+}
+
+module.exports = {getAllProducts,getProductVarsById,getDefaultProductVarById,getAllProductsBySubCat,getPriceByVariants,searchByTitle}
 
 
