@@ -76,21 +76,6 @@ class Product_Filter {
             });
         });
     }
-    static getAllitems(product_id) {
-        return new Promise((resolve, reject) => {
-            db.query(
-                "SELECT * FROM item where product_id=?", [product_id],
-                (err, results) => {
-                    if (err) return reject(err);
-                    let products = [];
-                    JSON.parse(JSON.stringify(results)).forEach((element) => {
-                        products.push(element);
-                    });
-                    resolve(products);
-                }
-            );
-        });
-    }
     static getAllSubCategories(cat_id) {
         return new Promise((resolve, reject) => {
             db.query(
@@ -102,6 +87,36 @@ class Product_Filter {
                         sub_categories.push(element.title);
                     });
                     resolve(sub_categories);
+                }
+            );
+        });
+    }
+    static getAllSubCategoriesWithId(cat_id) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "SELECT DISTINCT title,sub_category_id as id FROM sub_category Where category_id=?", [cat_id],
+                (err, results) => {
+                    if (err) return reject(err);
+                    let sub_categories = [];
+                    JSON.parse(JSON.stringify(results)).forEach((element) => {
+                        sub_categories.push({ title: element.title, id: element.id });
+                    });
+                    resolve(sub_categories);
+                }
+            );
+        });
+    }
+    static getAllProductsBySubCat(sub_cat_id) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "SELECT DISTINCT title,product_id FROM product Where sub_category_id=?", [sub_cat_id],
+                (err, results) => {
+                    if (err) return reject(err);
+                    let products = [];
+                    JSON.parse(JSON.stringify(results)).forEach((element) => {
+                        products.push({ title: element.title, id: element.product_id });
+                    });
+                    resolve(products);
                 }
             );
         });
