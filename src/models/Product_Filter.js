@@ -121,5 +121,20 @@ class Product_Filter {
             );
         });
     }
+    static getAllItemByProduct(product_id) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "SELECT * FROM item Where product_id=?", [product_id],
+                (err, results) => {
+                    if (err) return reject(err);
+                    var items = [];
+                    JSON.parse(JSON.stringify(results)).forEach((element) => {
+                        items.push({ title: element.title, id: element.product_id });
+                    });
+                    resolve(items);
+                }
+            );
+        });
+    }
 }
 module.exports = Product_Filter;
